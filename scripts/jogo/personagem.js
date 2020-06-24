@@ -1,64 +1,63 @@
-const calculaMatriz = (altura, largura, numSprites, index = 0) => {
-  let matriz = [
-    {
-      x: 0,
-      y: 0,
-    },
-  ];
+class Personagem extends Animacao {
+  constructor(matriz, imagem, x, largura, altura, larguraSprite, alturaSprite) {
+    super(matriz, imagem, x, largura, altura, larguraSprite, alturaSprite);
+    this.yInicial = height - this.altura;
+    this.y = this.yInicial;
+    this.velocidadeDoPulo = 0;
+    this.gravidade = 3;
+    this.numeroPulo = 0;
+    this.maxPulos = 2;
+    this.somDoPulo = loadSound("./assets/sons/somPulo.mp3");
+  }
 
-  let auxAltura = 0,
-    auxLargura = 0;
+  estaNoChao() {
+    if (this.y === this.yInicial) {
+      return true;
+    }
+  }
 
-  for (index; index < numSprites; index++) {
-    matriz[index] = {
-      x: auxLargura,
-      y: auxAltura,
-    };
+  zeraPulos() {
+    this.numeroPulo = 0;
+  }
 
-    if ((index + 1) % 4 === 0) {
-      auxLargura = 0;
-      auxAltura += altura;
+  pula() {
+    if (this.numeroPulo < 2) {
+      this.somDoPulo.play();
+      this.numeroPulo++;
+      this.velocidadeDoPulo = -30;
     } else {
-      auxLargura += largura;
+      if (this.estaNoChao()) {
+        this.zeraPulos();
+        this.pula();
+      }
     }
   }
-  return matriz;
-};
 
-class Personagem {
-  constructor(imagem, altura, largura) {
-    this.imagem = imagem;
-    this.altura = altura;
-    this.largura = largura;
-    this.matriz = calculaMatriz(altura * 2, largura * 2, 16);
-    this.frameAtual = 0;
+  // pula() {
+  //   this.numeroPulo++;
+  //   this.velocidadeDoPulo = -30;
+  // }
+
+  aplicaGravidade() {
+    this.y += this.velocidadeDoPulo;
+    this.velocidadeDoPulo += this.gravidade;
+
+    if (this.y > this.yInicial) {
+      this.y = this.yInicial;
+    }
   }
 
-  getMatriz(){
-    console.log(this.matriz);
-  }
-
-  exibe() {
-    image(
-      this.imagem,
-      20,
-      height - this.altura,
-      this.largura,
-      this.altura,
-      this.matriz[this.frameAtual].x,
-      this.matriz[this.frameAtual].y,
-      220,
-      270
+  estaColidindo(inimigo) {
+    const precisao = 0.7;
+    return collideRectRect(
+      this.x,
+      this.y,
+      this.largura * precisao,
+      this.altura * precisao,
+      inimigo.x,
+      inimigo.y,
+      inimigo.largura * precisao,
+      inimigo.altura * precisao
     );
-
-    
-    this.anima();
-  }
-
-  anima() {
-    this.frameAtual++;
-    if (this.frameAtual === this.matriz.length - 1) {
-      this.frameAtual = 0;
-    }
   }
 }
