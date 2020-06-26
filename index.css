@@ -1,0 +1,50 @@
+@import url("https://fonts.googleapis.com/css2?family=Pangolin&family=Roboto:wght@100&display=swap");
+body {
+  background-color: #642ea6;
+}
+
+.game {
+  background-attachment: fixed;
+  background-image: url(./assets/imagens/cenario/cenario.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 80%;
+  height: 80%;
+  margin: 3em auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border-radius: 10%;
+  max-width: 600px;
+}
+
+.game__content {
+  text-align: center;
+}
+
+.game__title {
+  font-family: 'Pangolin', cursive;
+  font-weight: bold;
+}
+
+.game__text {
+  font-family: 'Roboto', sans-serif;
+}
+
+.game__start {
+  background-color: #fff;
+  padding: .5em;
+  border-radius: 5px;
+}
+
+.game__start:hover {
+  background-color: #642ea6;
+  color: #fff;
+}
+/*# sourceMappingURL=index.css.map */

@@ -1,12 +1,34 @@
 class Personagem extends Animacao {
-  constructor(matriz, imagem, x, largura, altura, larguraSprite, alturaSprite) {
-    super(matriz, imagem, x, largura, altura, larguraSprite, alturaSprite);
-    this.yInicial = height - this.altura;
+  constructor(
+    imagem,
+    x,
+    variacaoY,
+    largura,
+    altura,
+    larguraSprite,
+    alturaSprite,
+    numSprites,
+    numColunas
+  ) {
+    super(
+      imagem,
+      x,
+      variacaoY,
+      largura,
+      altura,
+      larguraSprite,
+      alturaSprite,
+      numSprites,
+      numColunas
+    );
+    this.variacaoY = variacaoY;
+    this.yInicial = height - this.altura - variacaoY;
     this.y = this.yInicial;
     this.velocidadeDoPulo = 0;
-    this.gravidade = 3;
+    this.gravidade = 5;
     this.numeroPulo = 0;
     this.maxPulos = 2;
+    this.alturaDoPulo = -50;
     this.somDoPulo = loadSound("./assets/sons/somPulo.mp3");
   }
 
@@ -24,7 +46,7 @@ class Personagem extends Animacao {
     if (this.numeroPulo < 2) {
       this.somDoPulo.play();
       this.numeroPulo++;
-      this.velocidadeDoPulo = -30;
+      this.velocidadeDoPulo = this.alturaDoPulo;
     } else {
       if (this.estaNoChao()) {
         this.zeraPulos();
@@ -32,11 +54,6 @@ class Personagem extends Animacao {
       }
     }
   }
-
-  // pula() {
-  //   this.numeroPulo++;
-  //   this.velocidadeDoPulo = -30;
-  // }
 
   aplicaGravidade() {
     this.y += this.velocidadeDoPulo;

@@ -1,0 +1,42 @@
+$background-color: #642ea6;
+$white: #fff;
+$black: #000;
+@import url('https://fonts.googleapis.com/css2?family=Pangolin&family=Roboto:wght@100&display=swap');
+
+body{
+    background-color: $background-color;
+}
+
+.game{
+    background-attachment: fixed;
+    background-image: url(./assets/imagens/cenario/cenario.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 80%;
+    height: 80%;
+    margin: 3em auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10%;
+    max-width: 600px;
+    &__content{
+        text-align: center;
+    }
+    &__title{
+        font-family: 'Pangolin', cursive;
+        font-weight: bold;
+    }
+    &__text{
+        font-family: 'Roboto', sans-serif;
+    }
+    &__start{
+        background-color: $white;
+        padding: .5em;
+        border-radius: 5px;
+        &:hover{
+            background-color: $background-color;
+            color: $white;
+        }
+    }
+}

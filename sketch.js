@@ -1,117 +1,126 @@
 let imagemCenario;
 let imagemPersonagem;
 let imagemInimigo;
+let imagemGameOver;
 let somDoJogo;
-//let somDoPulo; 
-let personagem;
-let cenario;
-let inimigo;
+let somDoPulo;
+let hipsta;
+let pontuacao;
+const cenario = [];
+const inimigos = [];
 
-const matrizPersonagem = [
-  [0, 0],
-  [220, 0],
-  [440, 0],
-  [660, 0],
-  [0, 270],
-  [220, 270],
-  [440, 270],
-  [660, 270],
-  [0, 540],
-  [220, 540],
-  [440, 540],
-  [660, 540],
-  [0, 810],
-  [220, 810],
-  [440, 810],
-  [660, 810],
-];
+const pathImages = "./assets/imagens"
 
-const matrizInimigo = [
-  [0, 0],
-  [104, 0],
-  [208, 0],
-  [312, 0],
-  [0, 104],
-  [104, 104],
-  [208, 104],
-  [312, 104],
-  [0, 208],
-  [104, 208],
-  [208, 208],
-  [312, 208],
-  [0, 312],
-  [104, 312],
-  [208, 312],
-  [312, 312],
-  [0, 418],
-  [104, 418],
-  [208, 418],
-  [312, 418],
-  [0, 522],
-  [104, 522],
-  [208, 522],
-  [312, 522],
-  [0, 626],
-  [104, 626],
-  [208, 626],
-  [312, 626],
-];
 
 function preload() {
-  imagemCenario = loadImage("./assets/imagens/cenario/floresta.png");
-  imagemPersonagem = loadImage("./assets/imagens/personagem/correndo.png");
-  imagemInimigo = loadImage("./assets/imagens/inimigos/gotinha.png");
+  //Load Cenario
+  imagemCenario = {
+    ground: loadImage("./assets/imagens/cenario/ground.png"),
+    foreground: loadImage("./assets/imagens/cenario/foreground.png"),
+    middle_decor: loadImage("./assets/imagens/cenario/middle_decor.png"),
+    bg_decor: loadImage("./assets/imagens/cenario/bg_decor.png"),
+    sky: loadImage("./assets/imagens/cenario/sky.png"),
+  };
+  //Load imagem inimigos
+  imagemInimigo = [
+    loadImage(`${pathImages}/inimigos/gotinha.png`),
+    loadImage(`${pathImages}/inimigos/gotinha-voadora.png`),
+    loadImage(`${pathImages}/inimigos/troll.png`),
+  ];
+  //Load imagem game over
+  imagemGameOver = loadImage(`${pathImages}/assets/game-over.png`);
+  //Load imagem personagem
+  imagemPersonagem = loadImage(`${pathImages}/personagem/correndo.png`);
+  //Load som do jogo
   somDoJogo = loadSound("./assets/sons/trilha_jogo.mp3");
 }
 
 function setup() {
   //Executada uma vez antes do jogo iniciar
   createCanvas(windowWidth, windowHeight);
-  cenario = new Cenario(imagemCenario, 3);
-  personagem = new Personagem(
-    matrizPersonagem,
-    imagemPersonagem,
-    0,
-    110,
-    135,
-    220,
-    270
-  );
-  inimigo = new Inimigo(
-    matrizInimigo,
-    imagemInimigo,
+  ceu = new Cenario(imagemCenario.sky, 3);
+  bg_decor = new Cenario(imagemCenario.bg_decor, 3);
+  middle_decor = new Cenario(imagemCenario.middle_decor, 2);
+  foreground_decor = new Cenario(imagemCenario.foreground, 2);
+  ground = new Cenario(imagemCenario.ground, 2);
+  cenario.push(ceu, bg_decor, middle_decor, foreground_decor, ground);
+  hipsta = new Personagem(imagemPersonagem, 30, 30, 110, 135, 220, 270, 16, 4);
+
+  gotinha = new Inimigo(
+    imagemInimigo[0],
     width - 52,
+    30,
     52,
     52,
     104,
     104,
+    28,
+    4,
     10
   );
+
+  gotinha_voadora = new Inimigo(
+    imagemInimigo[1],
+    width - 52,
+    height / 2,
+    100,
+    75,
+    200,
+    150,
+    16,
+    3,
+    12,
+    50
+  );
+
+  troll = new Inimigo(
+    imagemInimigo[2],
+    width - 52,
+    10,
+    200,
+    200,
+    400,
+    400,
+    28,
+    5,
+    5,
+    200
+  );
+
+  inimigos.push(gotinha, gotinha_voadora, troll);
+
+  pontuacao = new Pontuacao();
+
   frameRate(30);
   somDoJogo.loop();
 }
 
 function keyPressed() {
   if (key === "ArrowUp") {
-    personagem.pula();
-//    somDoPulo.play();
+    hipsta.pula();
   }
 }
 
 function draw() {
-  // Desenhar cenário e personagem
-  cenario.exibe();
-  cenario.move();
-  personagem.exibe();
-  personagem.aplicaGravidade();
-  if(personagem.estaNoChao()){
-    personagem.zeraPulos();
+  // Desenhar cenário e hipsta
+  cenario.forEach((e) => {
+    e.exibe();
+    e.move();
+  });
+  pontuacao.exibe();
+  pontuacao.adicionaPonto();
+  hipsta.exibe();
+  hipsta.aplicaGravidade();
+  if (hipsta.estaNoChao()) {
+    hipsta.zeraPulos();
   }
-  inimigo.exibe();
-  inimigo.move();
-  if (personagem.estaColidindo(inimigo)) {
-    alert("Está colidindo");
-    noLoop();
-    somDoJogo.stop();
-  }
+  inimigos.forEach((e) => {
+    e.exibe();
+    e.move();
+    if (hipsta.estaColidindo(e)) {
+      noLoop();
+      somDoJogo.stop();
+      image(imagemGameOver, width/2 - 200, height/3);
+    }
+  });
 }
